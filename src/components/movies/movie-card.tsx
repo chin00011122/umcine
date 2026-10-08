@@ -1,13 +1,12 @@
 import type { Movie } from "../../types/movie";
 import { Link } from "@tanstack/react-router";
-import { cn } from "../../utils/cn";
+import { BookmarkButton } from "../bookmark-button";
 
 interface MovieCardProps {
   movie: Movie;
-  onToggleBookmark: (movieId: number) => void;
 }
 
-export default function MovieCard({ movie, onToggleBookmark }: MovieCardProps) {
+export default function MovieCard({ movie }: MovieCardProps) {
   return (
     <article className="group mx-auto w-full min-w-0 max-w-[360px]">
       <div className="relative aspect-[2/3] overflow-hidden rounded-[14px] bg-[#eee] shadow-[0_6px_18px_rgba(0,0,0,0.08)]">
@@ -19,26 +18,7 @@ export default function MovieCard({ movie, onToggleBookmark }: MovieCardProps) {
           />
         </Link>
 
-        <button
-          className={cn(
-            "absolute right-3 top-3 grid h-10 w-10 place-items-center rounded-full border-0 p-0 shadow-[0_3px_12px_rgba(0,0,0,0.16)] transition-[transform,background] duration-150 hover:scale-[1.06] hover:bg-white active:scale-[0.95]",
-            movie.isBookmarked ? "bg-blue-600" : "bg-black/60",
-          )}
-          type="button"
-          aria-label={movie.isBookmarked ? "북마크에서 삭제" : "북마크에 추가"}
-          aria-pressed={movie.isBookmarked}
-          onClick={() => onToggleBookmark(movie.id)}
-        >
-          <img
-            src={
-              movie.isBookmarked
-                ? "/icons/bookmark.svg"
-                : "/icons/bookmark-outline.svg"
-            }
-            className="h-6 w-6 brightness-0 invert"
-            alt=""
-          />
-        </button>
+        <div className="absolute right-3 top-3"><BookmarkButton movieId={movie.id} /></div>
       </div>
 
       <div className="px-[2px] pt-[14px]">
