@@ -11,11 +11,15 @@ export default function MovieCard({ movie }: MovieCardProps) {
     <article className="group mx-auto w-full min-w-0 max-w-[360px]">
       <div className="relative aspect-[2/3] overflow-hidden rounded-[14px] bg-[#eee] shadow-[0_6px_18px_rgba(0,0,0,0.08)]">
         <Link to="/movies/$movieId" params={{ movieId: String(movie.id) }}>
-          <img
-            className="block h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.025]"
-            src={movie.posterPath}
-            alt={`${movie.title} 포스터`}
-          />
+          {movie.posterPath ? (
+            <img
+              className="block h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.025]"
+              src={movie.posterPath}
+              alt={`${movie.title} 포스터`}
+            />
+          ) : (
+            <span className="grid h-full place-items-center text-sm text-slate-500">이미지 없음</span>
+          )}
         </Link>
 
         <div className="absolute right-3 top-3"><BookmarkButton movieId={movie.id} /></div>

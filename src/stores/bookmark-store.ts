@@ -1,9 +1,6 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { movies } from "../data/movies";
 import { readBookmarkIds } from "../utils/bookmark-storage";
-
-const validMovieIds = new Set(movies.map((movie) => movie.id));
 
 interface BookmarkStore {
   bookmarkedMovieIds: number[];
@@ -36,7 +33,7 @@ export const useBookmarkStore = create<BookmarkStore>()(
         return {
           bookmarkedMovieIds: ids.filter(
             (id): id is number =>
-              typeof id === "number" && Number.isInteger(id) && validMovieIds.has(id),
+              typeof id === "number" && Number.isInteger(id) && id > 0,
           ),
         };
       },
@@ -45,7 +42,7 @@ export const useBookmarkStore = create<BookmarkStore>()(
         const ids = Array.isArray(saved?.bookmarkedMovieIds)
           ? saved.bookmarkedMovieIds.filter(
               (id): id is number =>
-                typeof id === "number" && Number.isInteger(id) && validMovieIds.has(id),
+                typeof id === "number" && Number.isInteger(id) && id > 0,
             )
           : [];
         return { ...currentState, bookmarkedMovieIds: ids };
