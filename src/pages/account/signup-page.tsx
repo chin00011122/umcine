@@ -14,7 +14,9 @@ export function SignupPage() {
   const [emailMessage, setEmailMessage] = useState("");
   const [nicknameMessage, setNicknameMessage] = useState("");
   const [emailAvailable, setEmailAvailable] = useState<boolean | null>(null);
-  const [nicknameAvailable, setNicknameAvailable] = useState<boolean | null>(null);
+  const [nicknameAvailable, setNicknameAvailable] = useState<boolean | null>(
+    null,
+  );
   const [checkingEmail, setCheckingEmail] = useState(false);
   const [checkingNickname, setCheckingNickname] = useState(false);
 
@@ -30,10 +32,16 @@ export function SignupPage() {
     try {
       const result = await checkEmail(value);
       setEmailAvailable(result.available);
-      setEmailMessage(result.available ? "사용할 수 있는 이메일이에요." : "이미 사용 중인 이메일이에요.");
+      setEmailMessage(
+        result.available
+          ? "사용할 수 있는 이메일이에요."
+          : "이미 사용 중인 이메일이에요.",
+      );
     } catch (error) {
       setEmailAvailable(null);
-      setEmailMessage(error instanceof Error ? error.message : "이메일 확인에 실패했어요.");
+      setEmailMessage(
+        error instanceof Error ? error.message : "이메일 확인에 실패했어요.",
+      );
     } finally {
       setCheckingEmail(false);
     }
@@ -51,10 +59,16 @@ export function SignupPage() {
     try {
       const result = await checkNickname(value);
       setNicknameAvailable(result.available);
-      setNicknameMessage(result.available ? "사용할 수 있는 닉네임이에요." : "이미 사용 중인 닉네임이에요.");
+      setNicknameMessage(
+        result.available
+          ? "사용할 수 있는 닉네임이에요."
+          : "이미 사용 중인 닉네임이에요.",
+      );
     } catch (error) {
       setNicknameAvailable(null);
-      setNicknameMessage(error instanceof Error ? error.message : "닉네임 확인에 실패했어요.");
+      setNicknameMessage(
+        error instanceof Error ? error.message : "닉네임 확인에 실패했어요.",
+      );
     } finally {
       setCheckingNickname(false);
     }
@@ -89,7 +103,9 @@ export function SignupPage() {
     <AuthPage>
       <div className="mb-7 text-center">
         <h1 className="text-2xl font-bold">회원가입</h1>
-        <p className="mt-2 text-sm text-slate-500">UMCine 계정을 만들어 보세요.</p>
+        <p className="mt-2 text-sm text-slate-500">
+          UMCine 계정을 만들어 보세요.
+        </p>
       </div>
       <form onSubmit={submit} className="space-y-4">
         <label className="block text-sm font-medium">
@@ -117,7 +133,10 @@ export function SignupPage() {
             </button>
           </div>
           {emailMessage && (
-            <p className={`mt-1 text-xs ${emailAvailable ? "text-emerald-700" : "text-rose-600"}`} role="status">
+            <p
+              className={`mt-1 text-xs ${emailAvailable ? "text-emerald-700" : "text-rose-600"}`}
+              role="status"
+            >
               {emailMessage}
             </p>
           )}
@@ -147,7 +166,10 @@ export function SignupPage() {
             </button>
           </div>
           {nicknameMessage && (
-            <p className={`mt-1 text-xs ${nicknameAvailable ? "text-emerald-700" : "text-rose-600"}`} role="status">
+            <p
+              className={`mt-1 text-xs ${nicknameAvailable ? "text-emerald-700" : "text-rose-600"}`}
+              role="status"
+            >
               {nicknameMessage}
             </p>
           )}
@@ -176,13 +198,20 @@ export function SignupPage() {
             placeholder="비밀번호를 다시 입력해 주세요"
           />
         </label>
-        {message && <p role="status" className="text-sm text-blue-600">{message}</p>}
+        {message && (
+          <p role="status" className="text-sm text-blue-600">
+            {message}
+          </p>
+        )}
         <button className="h-12 w-full rounded-md bg-blue-600 text-sm font-semibold text-white hover:bg-blue-700">
           가입하기
         </button>
       </form>
       <p className="mt-5 text-center text-sm text-slate-500">
-        이미 계정이 있나요? <Link to="/login" className="font-semibold text-blue-600 no-underline">로그인</Link>
+        이미 계정이 있나요?{" "}
+        <Link to="/login" className="font-semibold text-blue-600 no-underline">
+          로그인
+        </Link>
       </p>
     </AuthPage>
   );
