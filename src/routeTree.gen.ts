@@ -11,11 +11,12 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LoginRouteImport } from './routes/login'
-import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as SignupRouteImport } from './routes/signup'
+import { Route as authenticatedProtectedRouteImport } from './routes/(authenticated)/_protected'
 import { Route as MoviesMovieIdRouteImport } from './routes/movies.$movieId'
-import { Route as ProfileEditRouteImport } from './routes/profile.edit'
+import { Route as authenticatedProtectedProfileRouteImport } from './routes/(authenticated)/_protected.profile'
+import { Route as authenticatedProtectedProfileEditRouteImport } from './routes/(authenticated)/_protected.profile_.edit'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -25,11 +26,6 @@ const IndexRoute = IndexRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProfileRoute = ProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SearchRoute = SearchRouteImport.update({
@@ -42,81 +38,94 @@ const SignupRoute = SignupRouteImport.update({
   path: '/signup',
   getParentRoute: () => rootRouteImport,
 } as any)
+const authenticatedProtectedRoute = authenticatedProtectedRouteImport.update({
+  id: '/(authenticated)/_protected',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MoviesMovieIdRoute = MoviesMovieIdRouteImport.update({
   id: '/movies/$movieId',
   path: '/movies/$movieId',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ProfileEditRoute = ProfileEditRouteImport.update({
-  id: '/edit',
-  path: '/edit',
-  getParentRoute: () => ProfileRoute,
-} as any)
+const authenticatedProtectedProfileRoute =
+  authenticatedProtectedProfileRouteImport.update({
+    id: '/profile',
+    path: '/profile',
+    getParentRoute: () => authenticatedProtectedRoute,
+  } as any)
+const authenticatedProtectedProfileEditRoute =
+  authenticatedProtectedProfileEditRouteImport.update({
+    id: '/profile_/edit',
+    path: '/profile/edit',
+    getParentRoute: () => authenticatedProtectedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
-  '/profile': typeof ProfileRouteWithChildren
   '/search': typeof SearchRoute
   '/signup': typeof SignupRoute
   '/movies/$movieId': typeof MoviesMovieIdRoute
-  '/profile/edit': typeof ProfileEditRoute
+  '/profile': typeof authenticatedProtectedProfileRoute
+  '/profile/edit': typeof authenticatedProtectedProfileEditRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
-  '/profile': typeof ProfileRouteWithChildren
   '/search': typeof SearchRoute
   '/signup': typeof SignupRoute
   '/movies/$movieId': typeof MoviesMovieIdRoute
-  '/profile/edit': typeof ProfileEditRoute
+  '/profile': typeof authenticatedProtectedProfileRoute
+  '/profile/edit': typeof authenticatedProtectedProfileEditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
-  '/profile': typeof ProfileRouteWithChildren
   '/search': typeof SearchRoute
   '/signup': typeof SignupRoute
+  '/(authenticated)/_protected': typeof authenticatedProtectedRouteWithChildren
   '/movies/$movieId': typeof MoviesMovieIdRoute
-  '/profile/edit': typeof ProfileEditRoute
+  '/(authenticated)/_protected/profile': typeof authenticatedProtectedProfileRoute
+  '/(authenticated)/_protected/profile_/edit': typeof authenticatedProtectedProfileEditRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/login'
-    | '/profile'
     | '/search'
     | '/signup'
     | '/movies/$movieId'
+    | '/profile'
     | '/profile/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/login'
-    | '/profile'
     | '/search'
     | '/signup'
     | '/movies/$movieId'
+    | '/profile'
     | '/profile/edit'
   id:
     | '__root__'
     | '/'
     | '/login'
-    | '/profile'
     | '/search'
     | '/signup'
+    | '/(authenticated)/_protected'
     | '/movies/$movieId'
-    | '/profile/edit'
+    | '/(authenticated)/_protected/profile'
+    | '/(authenticated)/_protected/profile_/edit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LoginRoute: typeof LoginRoute
-  ProfileRoute: typeof ProfileRouteWithChildren
   SearchRoute: typeof SearchRoute
   SignupRoute: typeof SignupRoute
+  authenticatedProtectedRoute: typeof authenticatedProtectedRouteWithChildren
   MoviesMovieIdRoute: typeof MoviesMovieIdRoute
 }
 
@@ -136,13 +145,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/profile': {
-      id: '/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof ProfileRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/search': {
       id: '/search'
       path: '/search'
@@ -157,6 +159,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SignupRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/(authenticated)/_protected': {
+      id: '/(authenticated)/_protected'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof authenticatedProtectedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/movies/$movieId': {
       id: '/movies/$movieId'
       path: '/movies/$movieId'
@@ -164,33 +173,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MoviesMovieIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/profile/edit': {
-      id: '/profile/edit'
-      path: '/edit'
+    '/(authenticated)/_protected/profile': {
+      id: '/(authenticated)/_protected/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof authenticatedProtectedProfileRouteImport
+      parentRoute: typeof authenticatedProtectedRoute
+    }
+    '/(authenticated)/_protected/profile_/edit': {
+      id: '/(authenticated)/_protected/profile_/edit'
+      path: '/profile/edit'
       fullPath: '/profile/edit'
-      preLoaderRoute: typeof ProfileEditRouteImport
-      parentRoute: typeof ProfileRoute
+      preLoaderRoute: typeof authenticatedProtectedProfileEditRouteImport
+      parentRoute: typeof authenticatedProtectedRoute
     }
   }
 }
 
-interface ProfileRouteChildren {
-  ProfileEditRoute: typeof ProfileEditRoute
+interface authenticatedProtectedRouteChildren {
+  authenticatedProtectedProfileRoute: typeof authenticatedProtectedProfileRoute
+  authenticatedProtectedProfileEditRoute: typeof authenticatedProtectedProfileEditRoute
 }
 
-const ProfileRouteChildren: ProfileRouteChildren = {
-  ProfileEditRoute: ProfileEditRoute,
-}
+const authenticatedProtectedRouteChildren: authenticatedProtectedRouteChildren =
+  {
+    authenticatedProtectedProfileRoute: authenticatedProtectedProfileRoute,
+    authenticatedProtectedProfileEditRoute:
+      authenticatedProtectedProfileEditRoute,
+  }
 
-const ProfileRouteWithChildren =
-  ProfileRoute._addFileChildren(ProfileRouteChildren)
+const authenticatedProtectedRouteWithChildren =
+  authenticatedProtectedRoute._addFileChildren(
+    authenticatedProtectedRouteChildren,
+  )
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LoginRoute: LoginRoute,
-  ProfileRoute: ProfileRouteWithChildren,
   SearchRoute: SearchRoute,
   SignupRoute: SignupRoute,
+  authenticatedProtectedRoute: authenticatedProtectedRouteWithChildren,
   MoviesMovieIdRoute: MoviesMovieIdRoute,
 }
 export const routeTree = rootRouteImport

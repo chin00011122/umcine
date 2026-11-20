@@ -2,6 +2,7 @@ import { Link, useParams } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { getMovieDetail } from "../../api/movies/get-movie-detail";
 import { BookmarkButton } from "../../components/bookmark-button";
+import { MovieRating } from "../../components/movies/movie-rating";
 import { getMovieDetailErrorMessage } from "../../utils/movies/get-movie-detail-error-message";
 import { toMovieDetailModel } from "../../utils/movies/movie-adapter";
 
@@ -98,6 +99,7 @@ export function MovieDetailPage() {
               </p>
             </div>
           </section>
+          <MovieRating movieId={movieId} />
         </main>
       ) : (
         <p>영화 정보를 찾을 수 없어요.</p>

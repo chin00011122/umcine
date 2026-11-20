@@ -1,24 +1,21 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { getMe } from "@/api/members/me";
+import { useAuthStore } from "@/stores/auth-store";
 import { getMemberRatings, type RatingResponse } from "../../api/backend-api";
-import type { UserProfile } from "../../types/user";
-import { getProfile } from "../../utils/profile";
 
 export function ProfilePage() {
   const navigate = useNavigate();
-  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const accessToken = useAuthStore((state) => state.accessToken);
+  const setAccessToken = useAuthStore((state) => state.setAccessToken);
+  const queryClient = useQueryClient();
+  const meQuery = useQuery({ queryKey: ["members", "me"], queryFn: getMe, enabled: Boolean(accessToken), staleTime: 5 * 60 * 1000, retry: false });
+  const profile = meQuery.data;
   const [memberId, setMemberId] = useState("1");
   const [ratings, setRatings] = useState<RatingResponse[] | null>(null);
   const [ratingsMessage, setRatingsMessage] = useState("");
   const [loadingRatings, setLoadingRatings] = useState(false);
-
-  useEffect(() => {
-    if (sessionStorage.getItem("umcine-logged-in") !== "true") {
-      navigate({ to: "/login" });
-      return;
-    }
-    setProfile(getProfile());
-  }, [navigate]);
 
   async function loadRatings(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -42,11 +39,15 @@ export function ProfilePage() {
   }
 
   function logout() {
+    setAccessToken(null);
+    queryClient.removeQueries({ queryKey: ["members", "me"] });
     sessionStorage.removeItem("umcine-logged-in");
-    navigate({ to: "/" });
+    void navigate({ to: "/" });
   }
 
-  if (!profile) return <main className="min-h-[60vh] bg-[#f5f6f8]" />;
+  if (!accessToken) return <main className="p-8">로그인이 필요해요. <Link to="/login">로그인하기</Link></main>;
+  if (meQuery.isLoading) return <main className="p-8">내 정보를 불러오는 중이에요.</main>;
+  if (meQuery.isError || !profile) return <main className="p-8">내 정보를 불러오지 못했어요. <button type="button" onClick={() => void meQuery.refetch()}>다시 시도</button></main>;
 
   return (
     <main className="min-h-[calc(100vh-72px)] bg-[#f5f6f8] px-5 py-12 sm:px-8">
